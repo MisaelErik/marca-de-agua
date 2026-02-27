@@ -25,5 +25,5 @@ export function getAutoCoords() {
 
 export function getScaleX() {
     const rect = dom.mainCanvas.getBoundingClientRect();
-    return dom.mainCanvas.width / rect.width;
+    return rect.width ? dom.mainCanvas.width / rect.width : 1;
 }

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Herramienta de Limpieza IA</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -26,222 +27,299 @@
                 </h1>
             </div>
 
-            <!-- 1. Selección de Imagen -->
-            <div class="flex flex-col">
-                <label class="block text-sm font-medium text-slate-300 mb-3">1. Selección de Imagen</label>
-
-                <!-- Carga de archivo -->
-                <div
-                    class="relative bg-[#13141c]/50 rounded-2xl border border-slate-700/50 p-6 flex flex-col items-center justify-center hover:border-indigo-500/50 transition-colors shadow-inner upload-box">
-                    <input type="file" id="imageInput" accept="image/png, image/jpeg, image/webp"
-                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-
-                    <div class="bg-[#1b1c26] p-3 rounded-2xl mb-4 border border-slate-700/50 glow-icon">
-                        <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                        </svg>
-                    </div>
-                    <p class="text-slate-300 text-sm mb-4">Arrastra y suelta tu imagen aquí</p>
-                    <button
-                        class="bg-transparent border border-slate-600 text-slate-300 hover:text-white hover:border-slate-400 px-4 py-2 rounded-lg text-xs font-medium transition-colors mb-3">
-                        Elegir archivo
-                    </button>
-                    <p class="text-[10px] text-slate-500">Tamaño máximo: 50MB, Formatos: JPG, PNG, WEBP</p>
-                </div>
-
-                <!-- Galería de prueba rápida -->
-                <div class="mt-4">
-                    <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">PRUEBAS
-                        RÁPIDAS</label>
-                    <div class="grid grid-cols-4 gap-2" id="testGallery">
-                        <div class="relative group"><img src="img/1.1.png"
-                                class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
-                                title="1:1" onerror="this.style.display='none'"><span
-                                class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
-                        </div>
-                        <div class="relative group"><img src="img/9.16.png"
-                                class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
-                                title="9:16" onerror="this.style.display='none'"><span
-                                class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
-                        </div>
-                        <div class="relative group"><img src="img/16.9.png"
-                                class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
-                                title="16:9" onerror="this.style.display='none'"><span
-                                class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
-                        </div>
-                        <div class="relative group"><img src="img/3.4.png"
-                                class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
-                                title="3:4" onerror="this.style.display='none'"><span
-                                class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
-                        </div>
-                        <div class="relative group"><img src="img/4.3.png"
-                                class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
-                                title="4:3" onerror="this.style.display='none'"><span
-                                class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
-                        </div>
-                        <div class="relative group"><img src="img/5.4.png"
-                                class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
-                                title="5:4" onerror="this.style.display='none'"><span
-                                class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
-                        </div>
-                        <div class="relative group"><img src="img/4.5.png"
-                                class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
-                                title="4:5" onerror="this.style.display='none'"><span
-                                class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
-                        </div>
-                        <div class="relative group"><img src="img/21.9.png"
-                                class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
-                                title="21:9" onerror="this.style.display='none'"><span
-                                class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
-                        </div>
-                    </div>
-                </div>
+            <!-- TABS MODO -->
+            <div class="flex bg-slate-800 rounded-lg p-1 w-full mt-2">
+                <button id="tabIndividual"
+                    class="flex-1 py-1.5 text-sm font-medium rounded-md bg-indigo-500 text-white shadow">Individual</button>
+                <button id="tabBatch"
+                    class="flex-1 py-1.5 text-sm font-medium rounded-md text-slate-400 hover:text-white transition">Por
+                    Lote (Batch)</button>
             </div>
 
-            <!-- 2. Configuración de Detección -->
-            <div id="controlsArea" class="opacity-50 pointer-events-none transition-opacity duration-500">
-                <label class="block text-sm font-medium text-slate-300 mb-3">2. Configuración de Detección</label>
+            <div id="panelIndividual" class="flex flex-col gap-6">
 
-                <div class="mb-5">
-                    <label class="block text-xs text-slate-400 mb-2">Modo de Detección</label>
-                    <select id="shapeSelect"
-                        class="bg-[#13141c] border border-indigo-500/30 text-slate-200 text-sm font-medium rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 shadow-sm outline-none appearance-none">
-                        <option value="star">Estrella (Gemini) Pro - Detección Profunda</option>
-                        <option value="rect">Cuadrado / Rectángulo</option>
-                        <option value="circle">Círculo / Óvalo</option>
-                        <option value="manual">Dibujo Libre (Pincel manual)</option>
+                <!-- 1. Selección de Imagen -->
+                <div class="flex flex-col">
+                    <label class="block text-sm font-medium text-slate-300 mb-3">1. Selección de Imagen</label>
+
+                    <!-- Carga de archivo -->
+                    <div
+                        class="relative bg-[#13141c]/50 rounded-2xl border border-slate-700/50 p-6 flex flex-col items-center justify-center hover:border-indigo-500/50 transition-colors shadow-inner upload-box">
+                        <input type="file" id="imageInput" accept="image/png, image/jpeg, image/webp"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+
+                        <div class="bg-[#1b1c26] p-3 rounded-2xl mb-4 border border-slate-700/50 glow-icon">
+                            <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                        </div>
+                        <p class="text-slate-300 text-sm mb-4">Arrastra y suelta tu imagen aquí</p>
+                        <button
+                            class="bg-transparent border border-slate-600 text-slate-300 hover:text-white hover:border-slate-400 px-4 py-2 rounded-lg text-xs font-medium transition-colors mb-3">
+                            Elegir archivo
+                        </button>
+                        <p class="text-[10px] text-slate-500">Tamaño máximo: 50MB, Formatos: JPG, PNG, WEBP</p>
+                    </div>
+
+                    <!-- Galería de prueba rápida -->
+                    <div class="mt-4">
+                        <label class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">PRUEBAS
+                            RÁPIDAS</label>
+                        <div class="grid grid-cols-4 gap-2" id="testGallery">
+                            <div class="relative group"><img src="img/1.1.png"
+                                    class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
+                                    title="1:1" onerror="this.style.display='none'"><span
+                                    class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
+                            </div>
+                            <div class="relative group"><img src="img/9.16.png"
+                                    class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
+                                    title="9:16" onerror="this.style.display='none'"><span
+                                    class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
+                            </div>
+                            <div class="relative group"><img src="img/16.9.png"
+                                    class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
+                                    title="16:9" onerror="this.style.display='none'"><span
+                                    class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
+                            </div>
+                            <div class="relative group"><img src="img/3.4.png"
+                                    class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
+                                    title="3:4" onerror="this.style.display='none'"><span
+                                    class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
+                            </div>
+                            <div class="relative group"><img src="img/4.3.png"
+                                    class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
+                                    title="4:3" onerror="this.style.display='none'"><span
+                                    class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
+                            </div>
+                            <div class="relative group"><img src="img/5.4.png"
+                                    class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
+                                    title="5:4" onerror="this.style.display='none'"><span
+                                    class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
+                            </div>
+                            <div class="relative group"><img src="img/4.5.png"
+                                    class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
+                                    title="4:5" onerror="this.style.display='none'"><span
+                                    class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
+                            </div>
+                            <div class="relative group"><img src="img/21.9.png"
+                                    class="test-img w-full h-12 rounded-lg border border-slate-700 hover:border-indigo-400 object-cover cursor-pointer bg-[#2a2b36] grayscale-[30%] hover:grayscale-0 transition-all"
+                                    title="21:9" onerror="this.style.display='none'"><span
+                                    class="block text-center mt-1 text-[10px] text-slate-400 group-hover:text-slate-200">Ejemplo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Configuración de Detección -->
+                <div id="controlsArea" class="opacity-50 pointer-events-none transition-opacity duration-500">
+                    <label class="block text-sm font-medium text-slate-300 mb-3">2. Configuración de Detección</label>
+
+                    <div class="mb-5">
+                        <label class="block text-xs text-slate-400 mb-2">Modo de Detección</label>
+                        <select id="shapeSelect"
+                            class="bg-[#13141c] border border-indigo-500/30 text-slate-200 text-sm font-medium rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 shadow-sm outline-none appearance-none">
+                            <option value="star">Estrella (Gemini) Pro - Detección Profunda</option>
+                            <option value="rect">Cuadrado / Rectángulo</option>
+                            <option value="circle">Círculo / Óvalo</option>
+                            <option value="manual">Dibujo Libre (Pincel manual)</option>
+                        </select>
+                    </div>
+
+                    <div id="formatBadge" class="mb-4 hidden text-center"></div>
+
+                    <!-- Controles Automáticos -->
+                    <div id="autoControls" class="space-y-6">
+                        <div>
+                            <div class="flex justify-between items-center text-xs text-slate-300 mb-2">
+                                <span class="flex items-center gap-2"><svg class="w-3 h-3 text-slate-400"
+                                        fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10a2 2 0 114 0 2 2 0 01-4 0z" />
+                                    </svg> Ancho de la máscara</span>
+                                <div class="bg-[#2a2b36] px-2 py-0.5 rounded text-slate-300 flex items-center gap-1">
+                                    <input type="number" id="numWidth" value="60" min="10"
+                                        class="w-10 bg-transparent text-right outline-none">
+                                    <span>px</span>
+                                </div>
+                            </div>
+                            <input type="range" id="markWidth" min="10" max="500" value="60"
+                                class="glow-slider w-full h-1 bg-slate-700/50 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center text-xs text-slate-300 mb-2">
+                                <span class="flex items-center gap-2"><svg class="w-3 h-3 text-slate-400"
+                                        fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
+                                            clip-rule="evenodd" />
+                                    </svg> Alto de la máscara</span>
+                                <div class="bg-[#2a2b36] px-2 py-0.5 rounded text-slate-300 flex items-center gap-1">
+                                    <input type="number" id="numHeight" value="60" min="10"
+                                        class="w-10 bg-transparent text-right outline-none">
+                                    <span>px</span>
+                                </div>
+                            </div>
+                            <input type="range" id="markHeight" min="10" max="500" value="60"
+                                class="glow-slider w-full h-1 bg-slate-700/50 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center text-xs text-slate-300 mb-2">
+                                <span>Mover Izq/Der</span>
+                                <div class="bg-[#2a2b36] px-2 py-0.5 rounded text-slate-300 flex items-center gap-1">
+                                    <input type="number" id="numRight" value="60" min="0" maxlength="4"
+                                        class="w-10 bg-transparent text-right outline-none">
+                                    <span>px</span>
+                                </div>
+                            </div>
+                            <input type="range" id="markRight" min="0" max="1000" value="60"
+                                class="glow-slider w-full h-1 bg-slate-700/50 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center text-xs text-slate-300 mb-2">
+                                <span>Mover Arriba/Abajo</span>
+                                <div class="bg-[#2a2b36] px-2 py-0.5 rounded text-slate-300 flex items-center gap-1">
+                                    <input type="number" id="numBottom" value="60" min="0"
+                                        class="w-10 bg-transparent text-right outline-none">
+                                    <span>px</span>
+                                </div>
+                            </div>
+                            <input type="range" id="markBottom" min="0" max="1000" value="60"
+                                class="glow-slider w-full h-1 bg-slate-700/50 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <button id="btnResetDefaults"
+                            class="hidden text-xs text-indigo-400 hover:text-indigo-300 mt-2">Restablecer
+                            valores</button>
+                        <!-- Presets ocultos para preservar IDs -->
+                        <div id="presetControls" class="hidden">
+                            <button id="btnSavePreset"></button>
+                            <select id="presetSelect"></select>
+                        </div>
+                    </div>
+
+                    <!-- Controles Manuales -->
+                    <div id="manualControls"
+                        class="space-y-4 hidden bg-slate-800/30 p-4 rounded-xl border border-slate-700/50">
+                        <p class="text-xs text-indigo-400 mb-1 font-semibold">Tapa manualmente la marca de agua</p>
+                        <div>
+                            <div class="flex justify-between items-center text-xs text-slate-300 mb-2">
+                                <span>Grosor del pincel</span>
+                                <input type="number" id="numBrush" value="30" min="5"
+                                    class="w-12 bg-[#2a2b36] p-1 text-right rounded outline-none border border-slate-700">
+                            </div>
+                            <input type="range" id="brushSize" min="5" max="200" value="30" class="glow-slider w-full">
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="btnUndoMask" disabled
+                                class="flex-1 text-xs py-2 bg-slate-700/50 hover:bg-slate-700 rounded-lg disabled:opacity-50">Deshacer</button>
+                            <button id="btnClearMask"
+                                class="flex-1 text-xs py-2 bg-red-900/30 hover:bg-red-900/50 text-red-400 rounded-lg border border-red-900/50">Limpiar</button>
+                        </div>
+                    </div>
+
+                    <!-- Select de limpieza oculto para preservar funcionalidad js original pero usando clone siempre (como Gemini Edit Studio) -->
+                    <select id="cleanMethod" class="hidden">
+                        <option value="clone" selected></option>
                     </select>
+
+                    <div class="mt-8">
+                        <button id="btnClean" class="w-full relative group">
+                            <div
+                                class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200">
+                            </div>
+                            <div
+                                class="relative w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-400 hover:to-purple-500 text-white text-sm font-semibold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
+                                    </path>
+                                </svg>
+                                LIMPIAR IMAGEN
+                            </div>
+                        </button>
+                        <button id="btnReset"
+                            class="w-full bg-[#2a2b36] hover:bg-[#323440] text-slate-200 text-sm font-semibold py-3 px-4 rounded-xl transition-all hidden border border-slate-700">↩
+                            Volver a Editar</button>
+                        <button id="btnDownload" class="w-full mt-3 relative group hidden">
+                            <div
+                                class="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200">
+                            </div>
+                            <div
+                                class="relative w-full bg-[#1b1c26] hover:bg-[#20222f] border border-emerald-500/50 text-emerald-400 text-sm font-semibold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2">
+                                Guardar Imagen Final
+                            </div>
+                        </button>
+                    </div>
+
+                    <p class="text-[10px] text-center text-slate-500 mt-2">*Gemini 1.5 Pro AI Engine active</p>
                 </div>
+            </div> <!-- End of panelIndividual -->
 
-                <div id="formatBadge" class="mb-4 hidden text-center"></div>
+            <!-- PANEL DE LOTE -->
+            <div id="panelBatch" class="flex flex-col gap-6 hidden">
+                <div class="flex flex-col">
+                    <label class="block text-sm font-medium text-slate-300 mb-3">Sube varias imágenes a la vez</label>
 
-                <!-- Controles Automáticos -->
-                <div id="autoControls" class="space-y-6">
-                    <div>
-                        <div class="flex justify-between items-center text-xs text-slate-300 mb-2">
-                            <span class="flex items-center gap-2"><svg class="w-3 h-3 text-slate-400"
-                                    fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 10a2 2 0 114 0 2 2 0 01-4 0z" />
-                                </svg> Ancho de la máscara</span>
-                            <div class="bg-[#2a2b36] px-2 py-0.5 rounded text-slate-300 flex items-center gap-1">
-                                <input type="number" id="numWidth" value="60" min="10"
-                                    class="w-10 bg-transparent text-right outline-none">
-                                <span>px</span>
-                            </div>
+                    <!-- Carga de archivo múltiple -->
+                    <div
+                        class="relative bg-[#13141c]/50 rounded-2xl border border-slate-700/50 p-6 flex flex-col items-center justify-center hover:border-indigo-500/50 transition-colors shadow-inner upload-box">
+                        <input type="file" id="batchImageInput" accept="image/png, image/jpeg, image/webp" multiple
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+
+                        <div class="bg-[#1b1c26] p-3 rounded-2xl mb-4 border border-slate-700/50 glow-icon">
+                            <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                </path>
+                            </svg>
                         </div>
-                        <input type="range" id="markWidth" min="10" max="500" value="60"
-                            class="glow-slider w-full h-1 bg-slate-700/50 rounded-lg appearance-none cursor-pointer">
+                        <p class="text-slate-300 text-sm mb-4">Añade hasta 50 imágenes</p>
+                        <button
+                            class="bg-transparent border border-slate-600 text-slate-300 hover:text-white hover:border-slate-400 px-4 py-2 rounded-lg text-xs font-medium transition-colors mb-2">
+                            Elegir archivos
+                        </button>
                     </div>
 
-                    <div>
-                        <div class="flex justify-between items-center text-xs text-slate-300 mb-2">
-                            <span class="flex items-center gap-2"><svg class="w-3 h-3 text-slate-400"
-                                    fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
-                                        clip-rule="evenodd" />
-                                </svg> Alto de la máscara</span>
-                            <div class="bg-[#2a2b36] px-2 py-0.5 rounded text-slate-300 flex items-center gap-1">
-                                <input type="number" id="numHeight" value="60" min="10"
-                                    class="w-10 bg-transparent text-right outline-none">
-                                <span>px</span>
-                            </div>
+                    <div id="batchStats" class="mt-4 hidden p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                        <p class="text-sm text-slate-300">Imágenes detectadas: <span id="batchCount"
+                                class="font-bold text-indigo-400">0</span></p>
+                        <!-- Loader visual -->
+                        <div class="w-full bg-slate-700 rounded-full h-2.5 mt-3">
+                            <div id="batchProgress" class="bg-indigo-500 h-2.5 rounded-full" style="width: 0%"></div>
                         </div>
-                        <input type="range" id="markHeight" min="10" max="500" value="60"
-                            class="glow-slider w-full h-1 bg-slate-700/50 rounded-lg appearance-none cursor-pointer">
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between items-center text-xs text-slate-300 mb-2">
-                            <span>Mover Izq/Der</span>
-                            <div class="bg-[#2a2b36] px-2 py-0.5 rounded text-slate-300 flex items-center gap-1">
-                                <input type="number" id="numRight" value="60" min="0" maxlength="4"
-                                    class="w-10 bg-transparent text-right outline-none">
-                                <span>px</span>
-                            </div>
-                        </div>
-                        <input type="range" id="markRight" min="0" max="1000" value="60"
-                            class="glow-slider w-full h-1 bg-slate-700/50 rounded-lg appearance-none cursor-pointer">
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between items-center text-xs text-slate-300 mb-2">
-                            <span>Mover Arriba/Abajo</span>
-                            <div class="bg-[#2a2b36] px-2 py-0.5 rounded text-slate-300 flex items-center gap-1">
-                                <input type="number" id="numBottom" value="60" min="0"
-                                    class="w-10 bg-transparent text-right outline-none">
-                                <span>px</span>
-                            </div>
-                        </div>
-                        <input type="range" id="markBottom" min="0" max="1000" value="60"
-                            class="glow-slider w-full h-1 bg-slate-700/50 rounded-lg appearance-none cursor-pointer">
-                    </div>
-
-                    <button id="btnResetDefaults"
-                        class="hidden text-xs text-indigo-400 hover:text-indigo-300 mt-2">Restablecer valores</button>
-                    <!-- Presets ocultos para preservar IDs -->
-                    <div id="presetControls" class="hidden">
-                        <button id="btnSavePreset"></button>
-                        <select id="presetSelect"></select>
+                        <p id="batchStatusText" class="text-xs text-slate-400 mt-2 text-right">0% Completado</p>
                     </div>
                 </div>
 
-                <!-- Controles Manuales -->
-                <div id="manualControls"
-                    class="space-y-4 hidden bg-slate-800/30 p-4 rounded-xl border border-slate-700/50">
-                    <p class="text-xs text-indigo-400 mb-1 font-semibold">Tapa manualmente la marca de agua</p>
-                    <div>
-                        <div class="flex justify-between items-center text-xs text-slate-300 mb-2">
-                            <span>Grosor del pincel</span>
-                            <input type="number" id="numBrush" value="30" min="5"
-                                class="w-12 bg-[#2a2b36] p-1 text-right rounded outline-none border border-slate-700">
-                        </div>
-                        <input type="range" id="brushSize" min="5" max="200" value="30" class="glow-slider w-full">
-                    </div>
-                    <div class="flex gap-2">
-                        <button id="btnUndoMask" disabled
-                            class="flex-1 text-xs py-2 bg-slate-700/50 hover:bg-slate-700 rounded-lg disabled:opacity-50">Deshacer</button>
-                        <button id="btnClearMask"
-                            class="flex-1 text-xs py-2 bg-red-900/30 hover:bg-red-900/50 text-red-400 rounded-lg border border-red-900/50">Limpiar</button>
-                    </div>
+                <div class="flex-1 overflow-y-auto max-h-[300px] rounded-xl custom-scroll border border-slate-700/50 hidden"
+                    id="batchPreviewList">
+                    <!-- Lista de procesados aquí -->
                 </div>
 
-                <!-- Select de limpieza oculto para preservar funcionalidad js original pero usando clone siempre (como Gemini Edit Studio) -->
-                <select id="cleanMethod" class="hidden">
-                    <option value="clone" selected></option>
-                </select>
-
-                <div class="mt-8">
-                    <button id="btnClean" class="w-full relative group">
+                <div class="mt-4">
+                    <button id="btnProcessBatch" class="w-full relative group">
                         <div
                             class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200">
                         </div>
                         <div
                             class="relative w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-400 hover:to-purple-500 text-white text-sm font-semibold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
-                                </path>
-                            </svg>
-                            LIMPIAR IMAGEN
+                            PROCESAR TODO (Óvalo Automático)
                         </div>
                     </button>
-                    <button id="btnReset"
-                        class="w-full bg-[#2a2b36] hover:bg-[#323440] text-slate-200 text-sm font-semibold py-3 px-4 rounded-xl transition-all hidden border border-slate-700">↩
-                        Volver a Editar</button>
-                    <button id="btnDownload" class="w-full mt-3 relative group hidden">
+
+                    <button id="btnDownloadBatch" class="w-full mt-3 relative group hidden">
                         <div
                             class="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200">
                         </div>
                         <div
                             class="relative w-full bg-[#1b1c26] hover:bg-[#20222f] border border-emerald-500/50 text-emerald-400 text-sm font-semibold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2">
-                            Guardar Imagen Final
+                            Descargar Todas (.ZIP)
                         </div>
                     </button>
                 </div>
-
-                <p class="text-[10px] text-center text-slate-500 mt-2">*Gemini 1.5 Pro AI Engine active</p>
             </div>
         </div>
 

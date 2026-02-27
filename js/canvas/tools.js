@@ -78,6 +78,70 @@ export function setupTools() {
     dom.mainCanvas.addEventListener('mouseleave', () => {
         dom.loupeCanvas.classList.add('hidden');
     });
+
+    // Wheel Zoom
+    dom.mainCanvas.addEventListener('wheel', (e) => {
+        if (!state.originalImage) return;
+        e.preventDefault();
+
+        const rect = dom.mainCanvas.getBoundingClientRect();
+        const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+        const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+
+        if (e.deltaY < 0) {
+            state.currentZoom = Math.min(state.currentZoom + 0.2, 5);
+        } else {
+            state.currentZoom = Math.max(state.currentZoom - 0.2, 1);
+            if (state.currentZoom === 1) {
+                state.panX = 0; state.panY = 0;
+            }
+        }
+
+        dom.mainCanvas.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+        dom.mainCanvas.style.transform = `translate(${state.panX}px, ${state.panY}px) scale(${state.currentZoom})`;
+        dom.mainCanvas.style.transition = 'none'; // Instant for wheel
+    });
+
+    // Spacebar Pan Toggle
+    let isSpaceDown = false;
+    let previousToolMode = null;
+
+    window.addEventListener('keydown', (e) => {
+        if (!state.originalImage) return;
+
+        // Spacebar for Panning
+        if (e.code === 'Space' && !isSpaceDown && document.activeElement.tagName !== 'INPUT') {
+            e.preventDefault();
+            isSpaceDown = true;
+            previousToolMode = state.activeToolMode;
+            state.activeToolMode = 'pan';
+            dom.mainCanvas.style.cursor = 'grab';
+        }
+
+        // Bracket keys for brush size
+        if (e.key === '[' || e.key === ']') {
+            let currentBrush = parseInt(dom.sliders.brush.value);
+            if (e.key === '[') currentBrush = Math.max(5, currentBrush - 5);
+            if (e.key === ']') currentBrush = Math.min(200, currentBrush + 5);
+
+            dom.sliders.brush.value = currentBrush;
+            dom.numInputs.brush.value = currentBrush;
+        }
+    });
+
+    window.addEventListener('keyup', (e) => {
+        if (e.code === 'Space') {
+            isSpaceDown = false;
+            if (previousToolMode) {
+                state.activeToolMode = previousToolMode;
+                // Update cursor back
+                if (state.activeToolMode === 'zoomIn') dom.mainCanvas.style.cursor = 'zoom-in';
+                else if (state.activeToolMode === 'zoomOut') dom.mainCanvas.style.cursor = 'zoom-out';
+                else if (state.activeToolMode === 'manual') dom.mainCanvas.style.cursor = 'crosshair';
+                else dom.mainCanvas.style.cursor = 'default';
+            }
+        }
+    });
 }
 
 export function updateLoupe(e) {

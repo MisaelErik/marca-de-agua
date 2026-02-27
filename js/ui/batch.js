@@ -19,6 +19,8 @@ export function setupBatch() {
 
     let batchFiles = [];
     let processedImages = []; // { file, dataUrl }
+    let isProcessingBatch = false;
+    let cancelBatch = false;
 
     // Tab Switching
     tabIndividual.addEventListener('click', () => {
@@ -55,39 +57,72 @@ export function setupBatch() {
     btnProcessBatch.addEventListener('click', async () => {
         if (batchFiles.length === 0) return;
 
-        btnProcessBatch.disabled = true;
-        btnProcessBatch.innerHTML = `<div class="relative w-full bg-slate-600 text-white text-sm font-semibold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">Procesando...</div>`;
+        if (isProcessingBatch) {
+            cancelBatch = true;
+            btnProcessBatch.innerHTML = `<div class="relative w-full bg-red-600/50 text-white text-sm font-semibold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">Cancelando...</div>`;
+            return;
+        }
+
+        isProcessingBatch = true;
+        cancelBatch = false;
+
+        btnProcessBatch.innerHTML = `<div class="relative w-full bg-slate-600 text-white text-sm font-semibold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
+            Cancelar Proceso
+        </div>`;
 
         batchPreviewList.innerHTML = '';
         batchPreviewList.classList.remove('hidden');
         batchProgress.style.width = '0%';
 
         processedImages = [];
+        let errors = 0;
 
         for (let i = 0; i < batchFiles.length; i++) {
+            if (cancelBatch) {
+                batchStatusText.textContent = "Proceso Cancelado";
+                break;
+            }
+
             const file = batchFiles[i];
             batchStatusText.textContent = `Procesando ${i + 1} de ${batchFiles.length}...`;
 
-            // Process image returns a Promise with the clean data URL
-            const cleanDataUrl = await processSingleBatchImage(file);
-            processedImages.push({ file: file, name: file.name, dataUrl: cleanDataUrl });
+            // Allow UI to update and unblock main thread
+            await new Promise(r => setTimeout(r, 10));
 
-            // Update UI list
-            addViewToList(file.name, cleanDataUrl);
+            try {
+                // Process image returns a Promise with the clean data URL
+                const cleanDataUrl = await processSingleBatchImage(file);
+                processedImages.push({ file: file, name: file.name, dataUrl: cleanDataUrl });
+
+                // Update UI list
+                addViewToList(file.name, cleanDataUrl);
+            } catch (err) {
+                console.error("Error processing file", file.name, err);
+                errors++;
+            }
 
             // Update bar
             const percent = Math.round(((i + 1) / batchFiles.length) * 100);
             batchProgress.style.width = `${percent}%`;
         }
 
-        batchStatusText.textContent = "Proceso Completo";
-        btnProcessBatch.disabled = false;
+        isProcessingBatch = false;
+
+        if (!cancelBatch) {
+            let msg = "Proceso Completo";
+            if (errors > 0) msg += ` (${errors} fallos)`;
+            batchStatusText.textContent = msg;
+        }
+
         btnProcessBatch.innerHTML = `
             <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-200"></div>
             <div class="relative w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-400 hover:to-purple-500 text-white text-sm font-semibold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2">
                 PROCESAR MÁS IMÁGENES
             </div>`;
-        btnDownloadBatch.classList.remove('hidden');
+
+        if (processedImages.length > 0) {
+            btnDownloadBatch.classList.remove('hidden');
+        }
     });
 
     btnDownloadBatch.addEventListener('click', async () => {

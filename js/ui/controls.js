@@ -88,20 +88,64 @@ export function setupControls() {
         reader.readAsDataURL(file);
     });
 
+    // Paste from Clipboard
+    window.addEventListener('paste', (e) => {
+        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+        for (let index in items) {
+            const item = items[index];
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+                const blob = item.getAsFile();
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    // Switch to individual tab if pasting
+                    document.getElementById('tabIndividual').click();
+                    processImageSrc(event.target.result);
+                };
+                reader.readAsDataURL(blob);
+            }
+        }
+    });
+
     dom.btnResetDefaults.addEventListener('click', () => {
         if (state.originalImage) applySmartDetection(state.originalImage);
     });
 
     dom.btnClean.addEventListener('click', executeClean);
     dom.btnReset.addEventListener('click', resetWorkspace);
+
+    // Add format selector dynamically under download button if not exists
+    const formatSelectHtml = `
+        <select id="exportFormat" class="w-full mt-2 bg-[#2a2b36] text-slate-300 text-xs px-2 py-1.5 rounded border border-slate-700 outline-none hidden text-center">
+            <option value="image/png">PNG Alta Calidad (Recomendado)</option>
+            <option value="image/webp">WEBP Optimizado (Web)</option>
+            <option value="image/jpeg">JPEG Estándar</option>
+        </select>
+    `;
+    dom.btnDownload.insertAdjacentHTML('afterend', formatSelectHtml);
+    const exportFormat = document.getElementById('exportFormat');
+
     dom.btnDownload.addEventListener('click', () => {
-        const dataUrl = dom.mainCanvas.toDataURL('image/png');
+        const format = exportFormat.value;
+        const quality = format === 'image/png' ? undefined : 0.85;
+        const ext = format.split('/')[1];
+
+        const dataUrl = dom.mainCanvas.toDataURL(format, quality);
         const link = document.createElement('a');
-        link.download = 'imagen-editada.png';
+        link.download = `imagen-editada.${ext}`;
         link.href = dataUrl;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    });
+
+    // Undo logic keybind
+    window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+            e.preventDefault();
+            if (dom.shapeSelect.value === 'manual' && !dom.btnUndoMask.disabled) {
+                dom.btnUndoMask.click();
+            }
+        }
     });
 
     document.querySelectorAll('.test-img').forEach(imgEl => {
@@ -171,6 +215,8 @@ export function resetWorkspace() {
     dom.btnClean.classList.remove('hidden');
     dom.btnReset.classList.add('hidden');
     dom.btnDownload.classList.add('hidden');
+    const exportFormat = document.getElementById('exportFormat');
+    if (exportFormat) exportFormat.classList.add('hidden');
 
     Object.values(dom.sliders).forEach(slider => slider.disabled = false);
     dom.shapeSelect.disabled = false;

@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background: #0B0F19;
+    /* Very dark background */
+    background-attachment: fixed;
+}
+
+/* Custom Scrollbar for Dark Mode */
+.custom-scroll::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+.canvas-container {
+    max-width: 100%;
+    overflow: hidden;
+    position: relative;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+canvas {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Base custom input styles */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Glowing Sliders */
+input[type=range].glow-slider {
+    -webkit-appearance: none;
+    background: rgba(51, 65, 85, 0.5);
+    height: 4px;
+    border-radius: 2px;
+}
+
+input[type=range].glow-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #a855f7;
+    /* Purple */
+    cursor: pointer;
+    box-shadow: 0 0 10px 2px rgba(168, 85, 247, 0.5), inset 0 0 0 3px #1e293b, inset 0 0 0 6px #3b82f6;
+    /* Glowing blue/purple effect */
+    transition: transform 0.1s;
+}
+
+input[type=range].glow-slider::-moz-range-thumb {
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: #a855f7;
+    cursor: pointer;
+    box-shadow: 0 0 10px 2px rgba(168, 85, 247, 0.5), inset 0 0 0 3px #1e293b, inset 0 0 0 6px #3b82f6;
+    border: none;
+}
+
+input[type=range].glow-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px 4px rgba(168, 85, 247, 0.6), inset 0 0 0 3px #1e293b, inset 0 0 0 6px #3b82f6;
+}
+
+/* Dropzone Hover Effects */
+.upload-box:hover .glow-icon {
+    box-shadow: 0 0 15px 0px rgba(99, 102, 241, 0.3);
+}
+
+.upload-box .glow-icon {
+    transition: all 0.3s ease;
+}
+
+/* Platform Spin Animation */
+@keyframes spin-slow {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.animate-spin-slow {
+    animation: spin-slow 10s linear infinite;
+    top: -20px;
+    left: 50%;
+}
